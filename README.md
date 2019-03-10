@@ -1,14 +1,58 @@
+# apa102
 
-# Contributing
+AP102 LED drivers for MakeCode for micro:bit.
 
-This project welcomes contributions and suggestions.  Most contributions require you to agree to a
-Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
-the rights to use your contribution. For details, visit https://cla.microsoft.com.
+## ~ hint
 
-When you submit a pull request, a CLA-bot will automatically determine whether you need to provide
-a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the instructions
-provided by the bot. You will only need to do this once across all repos using our CLA.
+APA102s are compatible with Bluetooth but requires one additional cable.
 
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
-For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
-contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+Unlike WS2018 LEDs ("neo-pixels") which are very sensitive to timing, APA102s have a clock lines
+that allows to drive them correctly even when Bluetooth interrupts the code.
+
+## ~
+
+## Send Buffer
+
+The APA102 light strip uses 4 bytes per pixel (see [datasheet](https://cdn-shop.adafruit.com/datasheets/APA102.pdf)):
+* brightness pixel (lower 6 bytes)
+* blue, green, red channels
+
+```typescript
+const buf = hex`ff0000ff ff00ff00 ffff0000`; // red, green, blue colors
+apa102.sendBuffer(buf, DigitalPin.P1, DigitalPin.P2);
+```
+
+## Send RGB buffer
+
+The sendRGBBuffer assumes 3 bytes per color red, green, blue.
+
+```typescript
+const buf = hex`ff0000 00ff00 0000ff`; // red, reen, blue colors
+apa102.sendRGBBuffer(buf, DigitalPin.P1, DigitalPin.P2);
+```
+
+## Send Palletized Buffer
+
+To minimize memory usage, you can define a 16 color palette and lookup each pixel color in the palette. This packing allows to use 4bit per pixels.
+
+```typescript
+const palette = hex`
+00000
+ff0000
+00ff00
+0000ff
+ffffff
+`; // add up to 16 colors
+const buf = hex`01234`; // dark, red, green, blue, white
+apa102.sendPaletteBuffer(buf, palette, DigitalPin.P1, DigitalPin.P2);
+```
+
+## License
+
+MIT
+
+## Supported targets
+
+* for PXT/microbit
+(The metadata above is needed for package search.)
+
