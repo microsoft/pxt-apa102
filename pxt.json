@@ -1,6 +1,6 @@
 {
     "name": "apa102",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "description": "AP102 LED driver for MakeCode for micro:bit",
     "dependencies": {
         "core": "*"
